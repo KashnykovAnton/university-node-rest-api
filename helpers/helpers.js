@@ -6,10 +6,14 @@ const messageList = {
     409: "Conflict",
 }
 
-const HttpError = (status, message = messageList[status]) => {
+export const HttpError = (status, message = messageList[status]) => {
     const error = new Error(message);
     error.status = status;
     return error;
 }
 
-export default HttpError;
+export const checkResult = (result) => {
+    if (!result) {
+      throw HttpError(404, `Not found`);
+    }
+  };
