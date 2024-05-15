@@ -4,7 +4,10 @@ function listContacts() {
   return Contact.find();
 }
 
-function getContactById(contactId) {}
+async function getContactById(_id) {
+  const result = await Contact.findById({ _id });
+  return result;
+}
 
 function removeContact(contactId) {}
 
