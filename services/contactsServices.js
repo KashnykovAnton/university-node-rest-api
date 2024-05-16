@@ -9,13 +9,21 @@ async function getContactById(_id) {
   return result;
 }
 
-function removeContact(contactId) {}
+function removeContact(id) {
+  return Contact.findByIdAndDelete(id);
+}
 
 function addContact(data) {
   return Contact.create(data);
 }
 
-function updateContact(contactId, body) {}
+function updateContact(id, body) {
+  return Contact.findByIdAndUpdate(id, body);
+}
+
+function updateStatusContact(id, body) {
+  return Contact.findByIdAndUpdate(id, body);
+}
 
 export default {
   listContacts,
@@ -23,4 +31,5 @@ export default {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };
