@@ -5,8 +5,11 @@ import controllerWrapper from "../decorators/controllerWrapper.js";
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const filter = { owner };
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
+  if (favorite !== undefined) {
+    filter.favorite = favorite === "true";
+  }
   const result = await contactsService.listContacts({
     filter,
     skip,
