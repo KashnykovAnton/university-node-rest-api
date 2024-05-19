@@ -3,7 +3,9 @@ import { checkResult } from "../helpers/helpers.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
 
 const getAllContacts = async (req, res, next) => {
-  const result = await contactsService.listContacts();
+  const { _id: owner } = req.user;
+  const filter = { owner };
+  const result = await contactsService.listContacts({ filter });
   res.json(result);
 };
 
