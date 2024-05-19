@@ -2,14 +2,20 @@ import contactsService from "../services/contactsServices.js";
 import { checkResult } from "../helpers/helpers.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
 
-const getAllContacts = async (req, res, next) => {
+const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const filter = { owner };
-  const result = await contactsService.listContacts({ filter });
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await contactsService.listContacts({
+    filter,
+    skip,
+    limit,
+  });
   res.json(result);
 };
 
-const getOneContact = async (req, res, next) => {
+const getOneContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
   const result = await contactsService.getContact({ _id, owner });
@@ -17,7 +23,7 @@ const getOneContact = async (req, res, next) => {
   res.json(result);
 };
 
-const deleteContact = async (req, res, next) => {
+const deleteContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
   const result = await contactsService.removeContact({ _id, owner });
@@ -25,13 +31,13 @@ const deleteContact = async (req, res, next) => {
   res.json(result);
 };
 
-const createContact = async (req, res, next) => {
+const createContact = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await contactsService.addContact({ ...req.body, owner });
   res.status(201).json(result);
 };
 
-const updateContact = async (req, res, next) => {
+const updateContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
   const result = await contactsService.updateContact({ _id, owner }, req.body);
@@ -39,7 +45,7 @@ const updateContact = async (req, res, next) => {
   res.json(result);
 };
 
-const updateStatusContact = async (req, res, next) => {
+const updateStatusContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
   const result = await contactsService.updateStatusContact(

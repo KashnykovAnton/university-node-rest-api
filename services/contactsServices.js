@@ -1,8 +1,8 @@
 import Contact from "../models/Contact.js";
 
 function listContacts(search = {}) {
-  const { filter = {} } = search;
-  return Contact.find(filter);
+  const { filter = {}, skip, limit } = search;
+  return Contact.find(filter).skip(skip).limit(limit);
 }
 
 function getContact(filter) {
@@ -27,7 +27,7 @@ function updateStatusContact(filter, body) {
 
 export default {
   listContacts,
-  getContactById,
+  getContact,
   removeContact,
   addContact,
   updateContact,
