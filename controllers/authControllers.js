@@ -3,6 +3,7 @@ import { HttpError, checkResult } from "../helpers/helpers.js";
 import { compareHash } from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
+import authServices from "../services/authServices.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -34,6 +35,7 @@ const login = async (req, res) => {
   const payload = { id };
 
   const token = createToken(payload);
+  await authServices.updateUser({ _id: id }, { token });
   res.json({
     token,
     user: {
@@ -45,12 +47,18 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id } = req.user;
-  await authService.updateUser({ _id }, { token: "" });
-  res.status(204).json("No Content");
+  await authService.updateUser({ _id }, { token: null });
+  res.status(204).json();
+};
+
+const getCurrent = (req, res) => {
+  const { email, subscription } = req.user;
+  res.json({ email, subscription });
 };
 
 export default {
   register: controllerWrapper(register),
   login: controllerWrapper(login),
   logout: controllerWrapper(logout),
+  getCurrent: controllerWrapper(getCurrent),
 };

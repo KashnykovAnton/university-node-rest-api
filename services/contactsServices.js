@@ -2,7 +2,10 @@ import Contact from "../models/Contact.js";
 
 function listContacts(search = {}) {
   const { filter = {}, skip, limit } = search;
-  return Contact.find(filter).skip(skip).limit(limit);
+  return Contact.find(filter)
+    .skip(skip)
+    .limit(limit)
+    .populate("owner", "email");
 }
 
 function countContacts(filter) {

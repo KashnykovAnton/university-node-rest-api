@@ -14,13 +14,13 @@ const authenticate = async (req, res, next) => {
   try {
     const { id } = verifyToken(token);
     const user = await authService.findUser({ _id: id });
-    if (!user) {
+    if (!user || !user.token) {
       return next(HttpError(401, "Not authorized"));
     }
     req.user = user;
     next();
   } catch (error) {
-    next(HttpError(401, error.message));
+    next(HttpError(401, "Not authorized"));
   }
 };
 
