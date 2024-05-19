@@ -5,25 +5,24 @@ function listContacts(search = {}) {
   return Contact.find(filter);
 }
 
-async function getContactById(_id) {
-  const result = await Contact.findById({ _id });
-  return result;
+function getContact(filter) {
+  return Contact.findOne(filter);
 }
 
-function removeContact(id) {
-  return Contact.findByIdAndDelete(id);
+function removeContact(filter) {
+  return Contact.findOneAndDelete(filter);
 }
 
 function addContact(data) {
   return Contact.create(data);
 }
 
-function updateContact(id, body) {
-  return Contact.findByIdAndUpdate(id, body);
+function updateContact(filter, body) {
+  return Contact.findOneAndUpdate(filter, body);
 }
 
-function updateStatusContact(id, body) {
-  return Contact.findByIdAndUpdate(id, body);
+function updateStatusContact(filter, body) {
+  return Contact.findOneAndUpdate(filter, body);
 }
 
 export default {

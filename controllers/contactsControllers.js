@@ -10,15 +10,17 @@ const getAllContacts = async (req, res, next) => {
 };
 
 const getOneContact = async (req, res, next) => {
-  const { id } = req.params;
-  const result = await contactsService.getContactById(id);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await contactsService.getContact({ _id, owner });
   checkResult(result);
   res.json(result);
 };
 
 const deleteContact = async (req, res, next) => {
-  const { id } = req.params;
-  const result = await contactsService.removeContact(id);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await contactsService.removeContact({ _id, owner });
   checkResult(result);
   res.json(result);
 };
@@ -30,15 +32,20 @@ const createContact = async (req, res, next) => {
 };
 
 const updateContact = async (req, res, next) => {
-  const { id } = req.params;
-  const result = await contactsService.updateContact(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await contactsService.updateContact({ _id, owner }, req.body);
   checkResult(result);
   res.json(result);
 };
 
 const updateStatusContact = async (req, res, next) => {
-  const { id } = req.params;
-  const result = await contactsService.updateStatusContact(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await contactsService.updateStatusContact(
+    { _id, owner },
+    req.body
+  );
   checkResult(result);
   res.json(result);
 };
