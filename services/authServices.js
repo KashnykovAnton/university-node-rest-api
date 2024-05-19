@@ -10,4 +10,8 @@ async function saveUser(data) {
   return User.create({ ...data, password: hashPassword });
 }
 
-export default { findUser, saveUser };
+function updateUser(filter, data) {
+  return User.findOneAndUpdate(filter, data);
+}
+
+export default { findUser, saveUser, updateUser };

@@ -5,6 +5,10 @@ function listContacts(search = {}) {
   return Contact.find(filter).skip(skip).limit(limit);
 }
 
+function countContacts(filter) {
+  return Contact.countDocuments(filter);
+}
+
 function getContact(filter) {
   return Contact.findOne(filter);
 }
@@ -27,6 +31,7 @@ function updateStatusContact(filter, body) {
 
 export default {
   listContacts,
+  countContacts,
   getContact,
   removeContact,
   addContact,

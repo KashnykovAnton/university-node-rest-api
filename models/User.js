@@ -4,22 +4,24 @@ import { emailRegexp } from "../constants/user-constants.js";
 
 const userSchema = new Schema(
   {
-    username: {
+    password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
     },
     email: {
       type: String,
-      unique: true,
+      required: [true, "Email is required"],
       match: emailRegexp,
-      required: true,
+      unique: true,
     },
-    password: {
+    subscription: {
       type: String,
-      required: true,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
     },
     token: {
       type: String,
+      default: null,
     },
   },
   { versionKey: false, timestamps: true }

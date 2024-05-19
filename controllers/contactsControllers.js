@@ -5,14 +5,18 @@ import controllerWrapper from "../decorators/controllerWrapper.js";
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const filter = { owner };
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const result = await contactsService.listContacts({
     filter,
     skip,
     limit,
   });
-  res.json(result);
+  const total = await contactsService.countContacts(filter);
+  res.json({
+    total,
+    result,
+  });
 };
 
 const getOneContact = async (req, res) => {
