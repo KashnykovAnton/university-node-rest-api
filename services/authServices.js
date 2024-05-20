@@ -11,7 +11,7 @@ async function saveUser(data) {
 }
 
 function updateUser(filter, data) {
-  return User.findOneAndUpdate(filter, data);
+  return User.findOneAndUpdate(filter, data).select("email subscription");
 }
 
 export default { findUser, saveUser, updateUser };

@@ -56,9 +56,20 @@ const getCurrent = (req, res) => {
   res.json({ email, subscription });
 };
 
+const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const subscription = req.body;
+  const result = await authService.updateUser({ _id }, subscription);
+  if (!result) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.json(result);
+};
+
 export default {
   register: controllerWrapper(register),
   login: controllerWrapper(login),
   logout: controllerWrapper(logout),
   getCurrent: controllerWrapper(getCurrent),
+  updateSubscription: controllerWrapper(updateSubscription),
 };
