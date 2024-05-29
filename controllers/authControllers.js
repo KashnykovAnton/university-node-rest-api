@@ -1,9 +1,10 @@
 import authService from "../services/authServices.js";
-import { HttpError, checkResult } from "../helpers/helpers.js";
+import { HttpError } from "../helpers/helpers.js";
 import { compareHash } from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
 import authServices from "../services/authServices.js";
+import { createAvatarUrl } from "../helpers/avatarHelpers.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -11,7 +12,8 @@ const register = async (req, res) => {
   if (user) {
     throw HttpError(409, "Email in use");
   }
-  const newUser = await authService.saveUser(req.body);
+  const url = createAvatarUrl(email);
+  const newUser = await authService.saveUser({ ...req.body, avatarURL: url });
   res.status(201).json({
     user: {
       email: newUser.email,
