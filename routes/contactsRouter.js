@@ -9,6 +9,7 @@ import {
   updateContactSchema,
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
+import upload from "../middlewares/upload.js";
 
 const contactsRouter = express.Router();
 
@@ -22,6 +23,8 @@ contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
 contactsRouter.post(
   "/",
+  upload.single("avatar"),
+  isEmptyBody,
   validateBody(createContactSchema),
   contactsControllers.createContact
 );
