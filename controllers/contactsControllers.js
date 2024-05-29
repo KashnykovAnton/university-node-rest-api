@@ -1,6 +1,10 @@
+import fs from "fs/promises";
+import path from "path";
 import contactsService from "../services/contactsServices.js";
 import { checkResult } from "../helpers/helpers.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
@@ -40,7 +44,15 @@ const deleteContact = async (req, res) => {
 
 const createContact = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await contactsService.addContact({ ...req.body, owner });
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatar = path.join("avatars", filename);
+  const result = await contactsService.addContact({
+    ...req.body,
+    avatar,
+    owner,
+  });
   res.status(201).json(result);
 };
 
