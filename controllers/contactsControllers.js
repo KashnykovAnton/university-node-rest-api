@@ -1,5 +1,5 @@
 import contactsService from "../services/contactsServices.js";
-import { checkResult } from "../helpers/helpers.js";
+import { checkResult } from "../helpers/errorHelpers.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
 
 const getAllContacts = async (req, res) => {

@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
 
-import { HttpError } from "../helpers/helpers.js";
+import { HttpError } from "../helpers/errorHelpers.js";
 
 const destination = path.resolve("tmp");
 

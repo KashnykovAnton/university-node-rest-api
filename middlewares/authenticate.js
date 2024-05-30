@@ -1,4 +1,4 @@
-import { HttpError } from "../helpers/helpers.js";
+import { HttpError } from "../helpers/errorHelpers.js";
 import { verifyToken } from "../helpers/jwt.js";
 import authService from "../services/authServices.js";
 

@@ -1,4 +1,4 @@
-import { HttpError } from "../helpers/helpers.js";
+import { HttpError } from "../helpers/errorHelpers.js";
 
 const isEmptyBody = (req, res, next) => {
   const { length } = Object.keys(req.body);

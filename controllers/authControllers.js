@@ -1,5 +1,5 @@
 import authService from "../services/authServices.js";
-import { HttpError } from "../helpers/helpers.js";
+import { HttpError } from "../helpers/errorHelpers.js";
 import { compareHash } from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
