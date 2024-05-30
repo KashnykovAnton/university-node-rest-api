@@ -4,7 +4,10 @@ import { compareHash } from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import controllerWrapper from "../decorators/controllerWrapper.js";
 import authServices from "../services/authServices.js";
-import { createAvatarUrl } from "../helpers/avatarHelpers.js";
+import {
+  createLocalAvatarUrl,
+  createRemoteAvatarUrl,
+} from "../helpers/avatarHelpers.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -12,7 +15,7 @@ const register = async (req, res) => {
   if (user) {
     throw HttpError(409, "Email in use");
   }
-  const url = createAvatarUrl(email);
+  const url = createRemoteAvatarUrl(email);
   const newUser = await authService.saveUser({ ...req.body, avatarURL: url });
   res.status(201).json({
     user: {
@@ -68,10 +71,21 @@ const updateSubscription = async (req, res) => {
   res.json(result);
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const avatarURL = await createLocalAvatarUrl(req.file);
+  const result = await authService.updateUser({ _id }, { avatarURL });
+  if (!result) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.json({ avatarURL });
+};
+
 export default {
   register: controllerWrapper(register),
   login: controllerWrapper(login),
   logout: controllerWrapper(logout),
   getCurrent: controllerWrapper(getCurrent),
   updateSubscription: controllerWrapper(updateSubscription),
+  updateAvatar: controllerWrapper(updateAvatar),
 };

@@ -11,7 +11,9 @@ async function saveUser(data) {
 }
 
 function updateUser(filter, data) {
-  return User.findOneAndUpdate(filter, data).select("email subscription");
+  return User.findOneAndUpdate(filter, data).select(
+    "email subscription avatarUrl"
+  );
 }
 
 export default { findUser, saveUser, updateUser };

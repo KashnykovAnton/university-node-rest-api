@@ -43,7 +43,6 @@ const createContact = async (req, res) => {
 
   const result = await contactsService.addContact({
     ...req.body,
-    avatar,
     owner,
   });
   res.status(201).json(result);
