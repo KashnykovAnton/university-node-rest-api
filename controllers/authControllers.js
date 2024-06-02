@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import authService from "../services/authServices.js";
 import { HttpError } from "../helpers/errorHelpers.js";
 import { compareHash } from "../helpers/compareHash.js";
@@ -8,6 +9,7 @@ import {
   createLocalAvatarUrl,
   createRemoteAvatarUrl,
 } from "../helpers/avatarHelpers.js";
+import sendEmail from "../helpers/sendEmail.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -16,7 +18,24 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
   const url = createRemoteAvatarUrl(email);
-  const newUser = await authService.saveUser({ ...req.body, avatarURL: url });
+  const verificationToken = nanoid();
+  const newUser = await authService.saveUser({
+    ...req.body,
+    avatarURL: url,
+    verificationToken,
+  });
+
+  const verificationUrl = `http://localhost:3000/api/users/verify/${verificationToken}`;
+
+  const emailMsg = {
+    to: email,
+    subject: "Please verify your email",
+    text: `Click here to verify your email: ${verificationUrl}`,
+    html: `<p>Please <a href="${verificationUrl}">click here</a> to verify your email.</p>`,
+  };
+
+  await sendEmail(emailMsg);
+
   res.status(201).json({
     user: {
       email: newUser.email,
