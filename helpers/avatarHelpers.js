@@ -19,10 +19,14 @@ const resizedAvatar = async (path) => {
 };
 
 export const createLocalAvatarUrl = async (dataFile) => {
-  const { path: oldPath, filename } = dataFile;
-  await resizedAvatar(oldPath);
-  const newPath = path.join(avatarsPath, filename);
-  await fs.rename(oldPath, newPath);
-  const avatar = path.join("avatars", filename);
-  return avatar;
+  try {
+    const { path: oldPath, filename } = dataFile;
+    await resizedAvatar(oldPath);
+    const newPath = path.join(avatarsPath, filename);
+    await fs.rename(oldPath, newPath);
+    const avatar = path.join("avatars", filename);
+    return avatar;
+  } catch (error) {
+    throw HttpError(500, `Error file avatar: ${error.message}`);
+  }
 };
