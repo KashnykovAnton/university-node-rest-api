@@ -9,7 +9,9 @@ import {
   createLocalAvatarUrl,
   createRemoteAvatarUrl,
 } from "../helpers/avatarHelpers.js";
+import { checkResult } from "../helpers/errorHelpers.js";
 import sendEmail from "../helpers/sendEmail.js";
+import createEmailBody from "../helpers/createEmailBody.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -25,16 +27,7 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  const verificationUrl = `http://localhost:3000/api/users/verify/${verificationToken}`;
-
-  const emailMsg = {
-    to: email,
-    subject: "Please verify your email",
-    text: `Click here to verify your email: ${verificationUrl}`,
-    html: `<p>Please <a href="${verificationUrl}">click here</a> to verify your email.</p>`,
-  };
-
-  await sendEmail(emailMsg);
+  createEmailBody(email, verificationToken);
 
   res.status(201).json({
     user: {
@@ -44,11 +37,36 @@ const register = async (req, res) => {
   });
 };
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await authService.findUser({ verificationToken });
+  checkResult(user);
+  await authService.updateUser(
+    { _id: user._id },
+    { verify: true, verificationToken: " " }
+  );
+  res.json({ message: "Verification successful" });
+};
+
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await authService.findUser({ email });
+  checkResult(user);
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+  createEmailBody(email, user.verificationToken);
+  res.json({ message: "Verification email sent" });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.findUser({ email });
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
+  }
+  if (!user.verify) {
+    throw HttpError(401, "You should verify your email before login");
   }
   const comparePassword = await compareHash(password, user.password);
   if (!comparePassword) {
@@ -102,6 +120,8 @@ const updateAvatar = async (req, res) => {
 
 export default {
   register: controllerWrapper(register),
+  verifyEmail: controllerWrapper(verifyEmail),
+  resendVerifyEmail: controllerWrapper(resendVerifyEmail),
   login: controllerWrapper(login),
   logout: controllerWrapper(logout),
   getCurrent: controllerWrapper(getCurrent),
