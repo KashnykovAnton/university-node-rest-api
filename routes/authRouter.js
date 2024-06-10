@@ -46,7 +46,7 @@ authRouter.patch(
 
 authRouter.get("/verify/:verificationToken", authControllers.verifyEmail);
 
-authRouter.get(
+authRouter.post(
   "/verify",
   isEmptyBody,
   validateBody(authEmailSchema),
